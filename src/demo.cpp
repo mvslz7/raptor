@@ -3,16 +3,16 @@
 #include <limits.h>
 #include "common.h"
 #include "demo.h"
-#include "rap.h"
-#include "loadsave.h"
-#include "objects.h"
-#include "gfxapi.h"
-#include "glbapi.h"
-#include "fx.h"
+#include "core/rap.h"
+#include "gameplay/loadsave.h"
+#include "entities/objects.h"
+#include "graphics/gfxapi.h"
+#include "assets/glbapi.h"
+#include "audio/fx.h"
 #include "windows.h"
-#include "intro.h"
-#include "input.h"
-#include "fileids.h"
+#include "graphics/intro.h"
+#include "input/input.h"
+#include "assets/fileids.h"
 
 #ifdef _MSC_VER
 #include <windows.h>

@@ -1,9 +1,9 @@
 #include <string.h>
 #include "common.h"
 #include "tile.h"
-#include "rap.h"
-#include "gfxapi.h"
-#include "i_video.h"
+#include "core/rap.h"
+#include "graphics/gfxapi.h"
+#include "media/i_video.h"
 
 #define TILEWIDTH 32
 #define TILEHEIGHT 32

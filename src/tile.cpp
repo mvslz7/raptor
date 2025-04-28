@@ -2,12 +2,12 @@
 #include <string.h>
 #include "common.h"
 #include "tile.h"
-#include "gfxapi.h"
-#include "rap.h"
-#include "glbapi.h"
-#include "loadsave.h"
-#include "fx.h"
-#include "anims.h"
+#include "graphics/gfxapi.h"
+#include "core/rap.h"
+#include "assets/glbapi.h"
+#include "gameplay/loadsave.h"
+#include "audio/fx.h"
+#include "gameplay/anims.h"
 
 #define MAX_STILES ( MAP_ONSCREEN * MAP_COLS )
 #define MAX_TILEDELAY ( ( MAP_ONSCREEN + 1 ) * MAP_COLS )
