@@ -34,7 +34,7 @@
 #define PATH_MAX MAX_PATH
 #endif // _MSC_VER
 
-#define MAX_SAVE  10
+#define MAX_SAVE 10
 
 char cdpath[PATH_MAX];
 char g_setup_ini[PATH_MAX];
@@ -59,8 +59,7 @@ SaveRead8 () - Reads 8 bit unsigned char from save file buffer
  ***************************************************************************/
 static unsigned char
 SaveRead8(
-    void
-)
+    void)
 {
     unsigned char data = -1;
 
@@ -74,8 +73,7 @@ SaveWrite8 () - Writes 8 bit unsigned char to save file buffer
  ***************************************************************************/
 static void
 SaveWrite8(
-    unsigned char data
-)
+    unsigned char data)
 {
     memcpy(&savebuffer[srwpos++], &data, 1);
 }
@@ -85,8 +83,7 @@ SaveRead32 () - Reads 32 bit int from save file buffer
  ***************************************************************************/
 static int
 SaveRead32(
-    void
-)
+    void)
 {
     int convert;
 
@@ -103,8 +100,7 @@ SaveWrite32 () - Writes 32 bit int to save file buffer
  ***************************************************************************/
 static void
 SaveWrite32(
-    int convert
-)
+    int convert)
 {
     SaveWrite8(convert & 0xff);
     SaveWrite8((convert >> 8) & 0xff);
@@ -115,12 +111,11 @@ SaveWrite32(
 /***************************************************************************
 SaveReadPointer () - Reads a 32 bit pointer regardless of the architecture
  ***************************************************************************/
-static void*
+static void *
 SaveReadPointer(
-    void
-)
+    void)
 {
-    return (void*)(intptr_t)SaveRead32();
+    return (void *)(intptr_t)SaveRead32();
 }
 
 /***************************************************************************
@@ -128,8 +123,7 @@ SaveWritePointer () - Writes a 32 bit pointer regardless of the architecture
  ***************************************************************************/
 static void
 SaveWritePointer(
-    const void *pointer
-)
+    const void *pointer)
 {
     SaveWrite32((intptr_t)pointer);
 }
@@ -139,8 +133,7 @@ ReadPlayerExt () - Reads external Player Structure regardless of architecture
  ***************************************************************************/
 static void
 ReadPlayerExt(
-    void
-)
+    void)
 {
     int i;
 
@@ -173,8 +166,7 @@ ReadPlayer () - Reads Player Structure regardless of architecture
  ***************************************************************************/
 static void
 ReadPlayer(
-    PLAYEROBJ *tplr
-)
+    PLAYEROBJ *tplr)
 {
     int i;
 
@@ -207,8 +199,7 @@ WritePlayerExt () - Writes external Player Structure regardless of architecture
  ***************************************************************************/
 static void
 WritePlayerExt(
-    void
-)
+    void)
 {
     int i;
 
@@ -241,16 +232,15 @@ ReadObject () - Reads Object Structure regardless of architecture
  ***************************************************************************/
 static void
 ReadObject(
-    OBJ *inobj
-)
+    OBJ *inobj)
 {
-    inobj->prev = (OBJ*)SaveReadPointer();
-    inobj->next = (OBJ*)SaveReadPointer();
+    inobj->prev = (OBJ *)SaveReadPointer();
+    inobj->next = (OBJ *)SaveReadPointer();
 
     inobj->num = SaveRead32();
     inobj->type = SaveRead32();
 
-    inobj->lib = (OBJ_LIB*)SaveReadPointer();
+    inobj->lib = (OBJ_LIB *)SaveReadPointer();
 
     inobj->inuse = SaveRead32();
 }
@@ -260,8 +250,7 @@ WriteObject () - Writes Object Structure regardless of architecture
  ***************************************************************************/
 static void
 WriteObject(
-    OBJ *inobj
-)
+    OBJ *inobj)
 {
     SaveWritePointer(inobj->prev);
     SaveWritePointer(inobj->next);
@@ -279,8 +268,7 @@ SaveResetReadWritePosition () - Resets read/write position in save file buffer
  ***************************************************************************/
 static void
 SaveResetReadWritePosition(
-    void
-)
+    void)
 {
     srwpos = 0;
 }
@@ -288,21 +276,19 @@ SaveResetReadWritePosition(
 /***************************************************************************
 RAP_SetPlayerDiff () - Set Player Difficulty
  ***************************************************************************/
-void 
-RAP_SetPlayerDiff(
-    void
-)
+void RAP_SetPlayerDiff(
+    void)
 {
     cur_diff = 0;
-    
+
     curplr_diff = plr.diff[cur_game];
-    
+
     switch (curplr_diff)
     {
     case DIFF_0:
         cur_diff |= EB_EASY_LEVEL;
         break;
-    
+
     case DIFF_1:
         cur_diff |= EB_EASY_LEVEL;
         break;
@@ -311,7 +297,7 @@ RAP_SetPlayerDiff(
         cur_diff |= EB_EASY_LEVEL;
         cur_diff |= EB_MED_LEVEL;
         break;
-    
+
     case DIFF_3:
         cur_diff |= EB_EASY_LEVEL;
         cur_diff |= EB_MED_LEVEL;
@@ -323,10 +309,8 @@ RAP_SetPlayerDiff(
 /***************************************************************************
 RAP_ClearPlayer () - Clear Player stuff
  ***************************************************************************/
-void 
-RAP_ClearPlayer(
-    void
-)
+void RAP_ClearPlayer(
+    void)
 {
     OBJS_Clear();
     filepos = -1;
@@ -344,95 +328,89 @@ RAP_ClearPlayer(
 /***************************************************************************
 RAP_IsPlayer () - Returns TRUE if a player is defined
  ***************************************************************************/
-int 
-RAP_IsPlayer(
-    void
-)
+int RAP_IsPlayer(
+    void)
 {
     if (filepos != -1)
         return 1;
-    
+
     return 0;
 }
 
 /***************************************************************************
 RAP_AreSavedFiles() - Returns TRUE if thier are previously saved game files
  ***************************************************************************/
-int 
-RAP_AreSavedFiles(
-    void
-)
+int RAP_AreSavedFiles(
+    void)
 {
     char temp[PATH_MAX];
     int loop;
-    
+
     for (loop = 0; loop < MAX_SAVE; loop++)
     {
         if (cdflag)
             sprintf(temp, cdfmt, cdpath, loop);
         else
             sprintf(temp, fmt, loop);
-        
+
         if (!access(temp, 0))
             return 1;
     }
-    
+
     return 0;
 }
 
 /***************************************************************************
 RAP_ReadFile() - Reads file into buffer for sizerec and DECRYTES
  ***************************************************************************/
-int                                 // RETURN: size of record
+int // RETURN: size of record
 RAP_ReadFile(
-    const char *name,               // INPUT : filename
-    void *buffer,                   // OUTPUT: pointer to buffer
-    int sizerec                     // INPUT : number of bytes to read
+    const char *name, // INPUT : filename
+    void *buffer,     // OUTPUT: pointer to buffer
+    int sizerec       // INPUT : number of bytes to read
 )
 {
     FILE *handle;
     handle = fopen(name, "rb");
-    
+
     if (!handle)
     {
         WIN_Msg("File open Error");
         return 0;
     }
-    
-    savebuffer = (char*)malloc(sizerec);
+
+    savebuffer = (char *)malloc(sizerec);
     fread(savebuffer, 1, sizerec, handle);
-    
+
     GLB_DeCrypt(gdmodestr, savebuffer, sizerec);
-    ReadPlayer((PLAYEROBJ*)buffer);
-    
+    ReadPlayer((PLAYEROBJ *)buffer);
+
     fclose(handle);
     free(savebuffer);
     SaveResetReadWritePosition();
-    
+
     return sizerec;
 }
 
 /***************************************************************************
 RAP_FFSaveFile() - Finds a filename to use
  ***************************************************************************/
-int 
-RAP_FFSaveFile(
-    void
-)
+int RAP_FFSaveFile(
+    void)
 {
     char temp[PATH_MAX];
     int rval, loop;
     rval = 0;
-    
+
     filepos = -1;
-    
+
     for (loop = 0; loop < MAX_SAVE; loop++)
     {
         if (cdflag)
             sprintf(temp, cdfmt, cdpath, loop);
         else
             sprintf(temp, fmt, loop);
-        
+
         if (access(temp, 0) != 0)
         {
             RAP_ClearPlayer();
@@ -441,46 +419,44 @@ RAP_FFSaveFile(
             break;
         }
     }
-    
+
     return rval;
 }
 
 /***************************************************************************
 RAP_IsSaveFile() - Returns True if thier is a sopt to save a character
  ***************************************************************************/
-int 
-RAP_IsSaveFile(
-    PLAYEROBJ *in_plr
-)
+int RAP_IsSaveFile(
+    PLAYEROBJ *in_plr)
 {
     PLAYEROBJ tp;
     char temp[PATH_MAX];
     int rval, loop;
     FILE *handle;
     rval = 0;
-    
+
     for (loop = 0; loop < MAX_SAVE; loop++)
     {
         if (cdflag)
             sprintf(temp, cdfmt, cdpath, loop);
         else
             sprintf(temp, fmt, loop);
-        
+
         handle = fopen(temp, "rb");
-        
+
         if (handle)
         {
-            savebuffer = (char*)malloc(sizeof(tp));
+            savebuffer = (char *)malloc(sizeof(tp));
             fread(savebuffer, 1, sizeof(tp), handle);
-            
-            //GLB_DeCrypt(gdmodestr, savebuffer, sizeof(tp)); //missing in v1.2
-            
+
+            // GLB_DeCrypt(gdmodestr, savebuffer, sizeof(tp)); //missing in v1.2
+
             ReadPlayer(&tp);
-            
+
             fclose(handle);
             free(savebuffer);
             SaveResetReadWritePosition();
-            
+
             if (!strcmp(tp.name, in_plr->name) && !strcmp(tp.callsign, in_plr->callsign))
             {
                 rval = 1;
@@ -488,17 +464,15 @@ RAP_IsSaveFile(
             }
         }
     }
-    
+
     return rval;
 }
 
 /***************************************************************************
 RAP_LoadPlayer () - Loads player from disk
  ***************************************************************************/
-int 
-RAP_LoadPlayer(
-    void
-)
+int RAP_LoadPlayer(
+    void)
 {
     char filename[PATH_MAX];
     char *dchrplr;
@@ -509,88 +483,86 @@ RAP_LoadPlayer(
     OBJ inobj;
 
     rval = 0;
-    
+
     if (filepos == -1)
         return 0;
-    
+
     // == Clear Player =======================
     OBJS_Clear();
     memset(&plr, 0, sizeof(plr));
-    
+
     if (cdflag)
         sprintf(filename, cdfmt, cdpath, filepos);
     else
         sprintf(filename, fmt, filepos);
-    
+
     handle = fopen(filename, "rb");
-    
+
     if (!handle)
     {
         WIN_Msg("Load Player Error");
         return 0;
     }
-    
+
     fseek(handle, 0, SEEK_END);
     size = ftell(handle);
     fseek(handle, 0, SEEK_SET);
-    
-    dchrplr = (char*)malloc(sizeof(plr));
-    savebuffer = (char*)malloc(size);
-    dchrobj = (char*)malloc(size - sizeof(plr));
-    
+
+    dchrplr = (char *)malloc(sizeof(plr));
+    savebuffer = (char *)malloc(size);
+    dchrobj = (char *)malloc(size - sizeof(plr));
+
     fread(dchrplr, 1, sizeof(plr), handle);
     fseek(handle, sizeof(plr), SEEK_SET);
-    
+
     GLB_DeCrypt(gdmodestr, dchrplr, sizeof(plr));
-    
+
     memcpy(savebuffer, dchrplr, sizeof(plr));
     fread(dchrobj, 1, size - sizeof(plr), handle);
-    
+
     GLB_DeCrypt(gdmodestr, dchrobj, size - sizeof(plr));
-    
+
     memcpy(savebuffer + sizeof(plr), dchrobj, size - sizeof(plr));
-    
+
     free(dchrplr);
     free(dchrobj);
 
     ReadPlayerExt();
-    
+
     for (loop = 0; loop < plr.numobjs; loop++)
     {
         ReadObject(&inobj);
-       
+
         if (!OBJS_Load(&inobj))
             break;
     }
-    
+
     fclose(handle);
     free(savebuffer);
     SaveResetReadWritePosition();
-    
+
     cur_game = plr.cur_game;
     game_wave[0] = plr.game_wave[0];
     game_wave[1] = plr.game_wave[1];
     game_wave[2] = plr.game_wave[2];
-    
+
     if (!OBJS_IsEquip(plr.sweapon))
         OBJS_GetNext();
-    
+
     if (OBJS_GetAmt(S_ENERGY) <= 0)
         EXIT_Error("RAP_LoadPLayer() - Loaded DEAD player");
-    
+
     rval = 1;
     RAP_SetPlayerDiff();
-    
+
     return rval;
 }
 
 /***************************************************************************
 RAP_SavePlayer() - Saves player data to filename
  ***************************************************************************/
-int 
-RAP_SavePlayer(
-    void
-)
+int RAP_SavePlayer(
+    void)
 {
     int rval;
     int size;
@@ -601,100 +573,101 @@ RAP_SavePlayer(
     OBJ *cur;
 
     rval = 0;
-    
+
     if (filepos == -1)
         EXIT_Error("RAP_Save() ERR: Try to Save Invalid Player");
-    
+
     if (OBJS_GetAmt(S_ENERGY) <= 0)
         EXIT_Error("RAP_Save() ERR: Try to save Dead player");
-    
+
     if (cdflag)
         sprintf(filename, cdfmt, cdpath, filepos);
     else
         sprintf(filename, fmt, filepos);
 
     handle = fopen(filename, "wb");
-    
+
     if (!handle)
     {
         WIN_Msg("Save Player Error !!!");
         return 0;
     }
-    
+
     plr.cur_game = cur_game;
     plr.game_wave[0] = game_wave[0];
     plr.game_wave[1] = game_wave[1];
     plr.game_wave[2] = game_wave[2];
     plr.numobjs = 0;
-    
+
     for (cur = first_objs.next; &last_objs != cur; cur = cur->next)
     {
         plr.numobjs++;
     }
-    
+
     size = plr.numobjs * 24 + sizeof(plr);
-    
-    echrplr = (char*)malloc(sizeof(plr));
-    savebuffer = (char*)malloc(size);
-    echrobj = (char*)malloc(size - sizeof(plr));
+
+    echrplr = (char *)malloc(sizeof(plr));
+    savebuffer = (char *)malloc(size);
+    echrobj = (char *)malloc(size - sizeof(plr));
 
     WritePlayerExt();
-    
+
     memcpy(echrplr, savebuffer, sizeof(plr));
-    
+
     GLB_EnCrypt(gdmodestr, echrplr, sizeof(plr));
-   
+
     for (cur = first_objs.next; &last_objs != cur; cur = cur->next)
     {
         WriteObject(cur);
     }
-    
+
     memcpy(echrobj, savebuffer + sizeof(plr), size - sizeof(plr));
-    
+
     GLB_EnCrypt(gdmodestr, echrobj, size - sizeof(plr));
-    
+
     memcpy(savebuffer, echrplr, sizeof(plr));
     memcpy(savebuffer + sizeof(plr), echrobj, size - sizeof(plr));
-    
+
     free(echrplr);
     free(echrobj);
 
     fwrite(savebuffer, 1, size, handle);
 
     rval = 1;
-    
+
     fclose(handle);
     free(savebuffer);
     SaveResetReadWritePosition();
-    
+
     return rval;
 }
 
 /***************************************************************************
  RAP_LoadMap () - Loads A level Map
  ***************************************************************************/
-void 
-RAP_LoadMap(
-    void
-)
+void RAP_LoadMap(
+    void)
 {
     char temp[44];
-    
+
     if (!gameflag[cur_game])
+    {
+        printf("RAP_LoadMap() - Invalid game %d\n", cur_game);
+
         EXIT_Error("Loading Invalid map game %d", cur_game);
-    
+    }
     GLB_FreeAll();
-    
+
     sprintf(temp, "MAP%uG%u_MAP", game_wave[cur_game] + 1, cur_game + 1);
     map_item = GLB_GetItemID(temp);
-    
+
     if (map_item == -1)
         EXIT_Error("RAP_LoadMap() - Invalid MAP.(%s)", temp);
-    
+
     ml = GLB_LockItem(map_item);
-    
-    mapmem = (MAZELEVEL*)ml;
-    csprite = (CSPRITE*)(ml + sizeof(MAZELEVEL));
+
+    mapmem = (MAZELEVEL *)ml;
+    csprite = (CSPRITE *)(ml + sizeof(MAZELEVEL));
 
     ENEMY_LoadLib();
     SND_CacheGFX();
@@ -714,10 +687,8 @@ RAP_LoadMap(
 /***************************************************************************
 RAP_FreeMap() - Frees up cached map stuff
  ***************************************************************************/
-void 
-RAP_FreeMap(
-    void
-)
+void RAP_FreeMap(
+    void)
 {
     if (map_item != -1)
     {
@@ -726,14 +697,14 @@ RAP_FreeMap(
         ANIMS_FreePics();
         OBJS_FreePics();
         SND_FreeFX();
-        
+
         // FREE MAP ========================
-        
+
         GLB_FreeItem(map_item);
-        
+
         map_item = -1;
     }
-    
+
     GLB_FreeAll();
     SND_CacheIFX();
 }
@@ -741,10 +712,9 @@ RAP_FreeMap(
 /***************************************************************************
 RAP_LoadWin() -
  ***************************************************************************/
-int                        // RETURN : -1 = no FIles, 0=cancel, 1=loaded
+int // RETURN : -1 = no FIles, 0=cancel, 1=loaded
 RAP_LoadWin(
-    void
-)
+    void)
 {
     char filenames[MAX_SAVE][PATH_MAX];
     char temp[PATH_MAX];
@@ -756,7 +726,7 @@ RAP_LoadWin(
     oldpos = -2;
     fndflag = 0;
     rval = 0;
-    
+
     memset(filenames, 0, sizeof(filenames));
     for (loop = 0; loop < MAX_SAVE; loop++)
     {
@@ -764,7 +734,7 @@ RAP_LoadWin(
             sprintf(temp, cdfmt, cdpath, loop);
         else
             sprintf(temp, fmt, loop);
-        
+
         if (!access(temp, 0))
         {
             if (pos == -1)
@@ -772,38 +742,38 @@ RAP_LoadWin(
             strncpy(filenames[loop], temp, PATH_MAX);
         }
     }
-    
+
     if (pos == -1)
-        return-1;
-    
+        return -1;
+
     RAP_ReadFile(filenames[pos], &tplr, sizeof(tplr));
     KBD_Clear();
     window = SWD_InitWindow(FILE139_LOAD_SWD);
     SWD_SetActiveField(window, LOAD_LOAD);
     SND_Patch(FX_SWEP, 127);
-    
+
     while (1)
     {
         SWD_Dialog(&dlg);
-        
+
         if (joy_ipt_MenuNew)
         {
-            if (XButton)                                                                                                                        
+            if (XButton)
             {
                 JOY_IsKey(XButton);
                 dlg.keypress = SC_DELETE;
             }
         }
-        
-        if ((KBD_IsKey(SC_ESC)) || (JOY_IsKeyMenu(Back) && joy_ipt_MenuNew) || (JOY_IsKeyMenu(BButton) && joy_ipt_MenuNew))                                      
+
+        if ((KBD_IsKey(SC_ESC)) || (JOY_IsKeyMenu(Back) && joy_ipt_MenuNew) || (JOY_IsKeyMenu(BButton) && joy_ipt_MenuNew))
         {
             rval = 0;
             goto load_exit;
         }
-        
+
         if (KBD_Key(SC_X) && KBD_Key(SC_ALT))
             WIN_AskExit();
-        
+
         if (update)
         {
             update = 0;
@@ -813,22 +783,22 @@ RAP_LoadWin(
                     addnum = -1;
                 else
                     addnum = 1;
-                
+
                 if (pos >= 0)
                     pos %= MAX_SAVE;
                 else
                     pos += MAX_SAVE;
-                
+
                 if (pos < 0)
                     EXIT_Error("Help");
-                
+
                 fndflag = 0;
                 for (loop = 0; loop < MAX_SAVE; loop++)
                 {
                     if (filenames[pos][0] == 0)
                     {
                         pos += addnum;
-                        
+
                         if (pos >= 0)
                             pos %= MAX_SAVE;
                         else
@@ -840,17 +810,17 @@ RAP_LoadWin(
                         break;
                     }
                 }
-                
+
                 if (fndflag == 0)
                 {
                     rval = -1;
                     goto load_exit;
                 }
-                
+
                 RAP_ReadFile(filenames[pos], &tplr, sizeof(tplr));
                 oldpos = pos;
             }
-            
+
             SWD_SetFieldItem(window, LOAD_IDPIC, id_pics[tplr.id_pic]);
             SWD_SetFieldText(window, LOAD_NAME, tplr.name);
             SWD_SetFieldText(window, LOAD_CALL, tplr.callsign);
@@ -859,8 +829,8 @@ RAP_LoadWin(
             SWD_ShowAllWindows();
             GFX_DisplayUpdate();
             SND_Patch(FX_SWEP, 127);
-            }
-        
+        }
+
         switch (dlg.keypress)
         {
         case SC_LEFT:
@@ -870,7 +840,7 @@ RAP_LoadWin(
             dlg.cur_cmd = F_SELECT;
             dlg.field = LOAD_NEXT;
             break;
-        
+
         case SC_RIGHT:
         case SC_PAGEUP:
         case SC_UP:
@@ -878,7 +848,7 @@ RAP_LoadWin(
             dlg.cur_cmd = F_SELECT;
             dlg.field = LOAD_PREV;
             break;
-        
+
         case SC_DELETE:
             dlg.cur_act = S_FLD_COMMAND;
             dlg.cur_cmd = F_SELECT;
@@ -891,7 +861,7 @@ RAP_LoadWin(
             dlg.field = LOAD_LOAD;
             break;
         }
-        
+
         if (dlg.cur_act == S_FLD_COMMAND && dlg.cur_cmd == F_SELECT)
         {
             switch (dlg.field)
@@ -900,12 +870,12 @@ RAP_LoadWin(
                 pos++;
                 update = 1;
                 break;
-            
+
             case LOAD_PREV:
                 pos--;
                 update = 1;
                 break;
-            
+
             case LOAD_DEL:
                 update = 1;
                 sprintf(temp, "Delete Pilot %s ?", tplr.callsign);
@@ -917,10 +887,10 @@ RAP_LoadWin(
                     pos++;
                 }
                 break;
-            
+
             case LOAD_CANCEL:
                 goto load_exit;
-            
+
             case LOAD_LOAD:
                 filepos = pos;
                 RAP_LoadPlayer();
@@ -931,25 +901,24 @@ RAP_LoadWin(
     }
 
 load_exit:
-    
+
     SWD_DestroyWindow(window);
     SWD_ShowAllWindows();
     GFX_DisplayUpdate();
-    
+
     return rval;
 }
 
 /***************************************************************************
 RAP_InitLoadSave() - Inits the load and save path stuff
  ***************************************************************************/
-const char*
+const char *
 RAP_InitLoadSave(
-    void
-)
+    void)
 {
 #if _WIN32 || __linux__ || __APPLE__
-    char* gethome;
-    
+    char *gethome;
+
     gethome = SDL_GetPrefPath("", "Raptor");
 
     if (gethome != NULL)
@@ -980,10 +949,9 @@ RAP_InitLoadSave(
 /***************************************************************************
 RAP_SetupFilename() - Gets current setup.ini path and name
  ***************************************************************************/
-const char*
+const char *
 RAP_SetupFilename(
-    void
-)
+    void)
 {
     return g_setup_ini;
 }
@@ -991,27 +959,25 @@ RAP_SetupFilename(
 /***************************************************************************
 RAP_WriteDefaultSetup() - Writes default setup.ini
  ***************************************************************************/
-void 
-RAP_WriteDefaultSetup(
-    void
-)
+void RAP_WriteDefaultSetup(
+    void)
 {
     INI_PutPreferenceLong("Setup", "Detail", 1);
     INI_PutPreferenceLong("Setup", "Control", 0);
-    INI_PutPreferenceLong("Setup", "Haptic", 1);                           
-    INI_PutPreferenceLong("Setup", "joy_ipt_MenuNew", 0);         
+    INI_PutPreferenceLong("Setup", "Haptic", 1);
+    INI_PutPreferenceLong("Setup", "joy_ipt_MenuNew", 0);
 
 #if _WIN32 || __APPLE__
     INI_PutPreferenceLong("Setup", "sys_midi", 1);
 #else
     INI_PutPreferenceLong("Setup", "sys_midi", 0);
 #endif // _WIN32 __APPLE__
- 
-    INI_PutPreferenceLong("Setup", "winmm_mpu_device", 0);       
-    INI_PutPreferenceLong("Setup", "core_dls_synth", 1);           
-    INI_PutPreferenceLong("Setup", "core_midi_port", 0);           
-    INI_PutPreferenceLong("Setup", "alsa_output_client", 128);           
-    INI_PutPreferenceLong("Setup", "alsa_output_port", 0);               
+
+    INI_PutPreferenceLong("Setup", "winmm_mpu_device", 0);
+    INI_PutPreferenceLong("Setup", "core_dls_synth", 1);
+    INI_PutPreferenceLong("Setup", "core_midi_port", 0);
+    INI_PutPreferenceLong("Setup", "alsa_output_client", 128);
+    INI_PutPreferenceLong("Setup", "alsa_output_port", 0);
     INI_PutPreference("Setup", "SoundFont", "SoundFont.sf2");
     INI_PutPreferenceLong("Music", "Volume", 85);
 
@@ -1054,10 +1020,9 @@ RAP_WriteDefaultSetup(
 /***************************************************************************
 RAP_GetPath() - Gets external path
  ***************************************************************************/
-const char*
+const char *
 RAP_GetPath(
-    void 
-)
+    void)
 {
     return cdpath;
 }
@@ -1065,10 +1030,8 @@ RAP_GetPath(
 /***************************************************************************
 RAP_CheckFileInPath() - Checks whether external path contains file
  ***************************************************************************/
-int
-RAP_CheckFileInPath(
-    const char* filename
-)
+int RAP_CheckFileInPath(
+    const char *filename)
 {
     char buffer[PATH_MAX];
 

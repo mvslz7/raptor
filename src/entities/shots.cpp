@@ -29,23 +29,21 @@ SHOT_LIB shot_lib[LAST_WEAPON + 1];
 /***************************************************************************
 SHOTS_Clear () * Clears out SHOTS Linklist
  ***************************************************************************/
-void 
-SHOTS_Clear(
-    void
-)
+void SHOTS_Clear(
+    void)
 {
     int loop;
-    
+
     shotnum = 0;
-    
+
     first_shots.prev = NULL;
     first_shots.next = &last_shots;
-    
+
     last_shots.prev = &first_shots;
     last_shots.next = NULL;
-    
+
     free_shots = shots;
-    
+
     memset(shots, 0, sizeof(shots));
 
     for (loop = 0; loop < MAX_SHOTS; loop++)
@@ -55,7 +53,7 @@ SHOTS_Clear(
             shots[loop].next = &first_shots;
             continue;
         }
-        
+
         shots[loop].next = &shots[loop + 1];
     }
 }
@@ -65,28 +63,27 @@ SHOTS_Get () - gets a Free SHOT OBJECT from linklist
  *-------------------------------------------------------------------------*/
 SHOTS
 *SHOTS_Get(
-    void
-)
+    void)
 {
     SHOTS *news;
-    
+
     if (!free_shots)
         return NULL;
-    
+
     shotnum++;
     if (shotnum > shothigh)
         shothigh = shotnum;
-    
+
     news = free_shots;
     free_shots = free_shots->next;
-    
+
     memset(news, 0, sizeof(SHOTS));
-    
+
     news->next = &last_shots;
     news->prev = last_shots.prev;
     last_shots.prev = news;
     news->prev->next = news;
-    
+
     return news;
 }
 
@@ -95,57 +92,54 @@ SHOTS_Remove () - Removes SHOT OBJECT from linklist
  *-------------------------------------------------------------------------*/
 SHOTS
 *SHOTS_Remove(
-    SHOTS *sh
-)
+    SHOTS *sh)
 {
     SHOTS *next;
-    
+
     shotnum--;
-    
+
     next = sh->prev;
-    
+
     sh->next->prev = sh->prev;
     sh->prev->next = sh->next;
-    
+
     memset(sh, 0, sizeof(SHOTS));
-    
+
     sh->next = free_shots;
-    
+
     free_shots = sh;
-    
+
     return next;
 }
 
 /***************************************************************************
 SHOTS_Init () - Inits SHOTS system and clears link list
  ***************************************************************************/
-void 
-SHOTS_Init(
-    void
-)
+void SHOTS_Init(
+    void)
 {
     int i, item;
     SHOT_LIB *slib;
-    
+
     SHOTS_Clear();
-    
+
     for (i = 0; i < 4; i++)
     {
-        detpow[i] = (char*)GLB_LockItem(FILE139_DETHPOW_BLK + i);
+        detpow[i] = (char *)GLB_LockItem(FILE139_DETHPOW_BLK + i);
     }
-    
+
     for (i = 0; i < 4; i++)
     {
-        laspow[i] = (char*)GLB_LockItem(FILE13d_LASERPOW_BLK + i);
+        laspow[i] = (char *)GLB_LockItem(FILE13d_LASERPOW_BLK + i);
     }
-    
+
     for (i = 0; i < 4; i++)
     {
-        lashit[i] = (char*)GLB_LockItem(FILE1f1_DRAYHIT_BLK + i);
+        lashit[i] = (char *)GLB_LockItem(FILE1f1_DRAYHIT_BLK + i);
     }
-    
+
     memset(shot_lib, 0, sizeof(shot_lib));
-    
+
     // == FORWARD_GUNS =====================================
     slib = &shot_lib[S_FORWARD_GUNS];
     slib->lumpnum = FILE1c3_NMSHOT_BLK;
@@ -167,9 +161,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_ALL;
@@ -195,9 +189,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_AIR;
@@ -223,9 +217,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_GRALL;
@@ -252,9 +246,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_ALL;
@@ -281,9 +275,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_GRALL;
@@ -310,9 +304,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     // slib->f_78 = slib->f_74->f_c >> 1;
     // slib->f_7c = slib->f_74->f_10 >> 1;
     slib->ht = S_ALL;
@@ -339,9 +333,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_AIR;
@@ -368,9 +362,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_AIR;
@@ -397,9 +391,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_GROUND;
@@ -426,9 +420,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_GTILE;
@@ -455,9 +449,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_SUCK;
@@ -485,9 +479,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_ALL;
@@ -515,9 +509,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_ALL;
@@ -545,9 +539,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_AIR;
@@ -575,9 +569,9 @@ SHOTS_Init(
     for (i = 0; i < slib->numframes; i++)
     {
         item = slib->lumpnum + i;
-        slib->pic[i] = (char*)GLB_LockItem(item);
+        slib->pic[i] = (char *)GLB_LockItem(item);
     }
-    slib->h = (GFX_PIC*)slib->pic[0];
+    slib->h = (GFX_PIC *)slib->pic[0];
     slib->hlx = slib->h->width >> 1;
     slib->hly = slib->h->height >> 1;
     slib->ht = S_GRALL;
@@ -586,9 +580,8 @@ SHOTS_Init(
 /***************************************************************************
 SHOTS_PlayerShoot() - Shoots the specified weapon
  ***************************************************************************/
-int 
-SHOTS_PlayerShoot(
-    int type               // INPUT : OBJECT TYPE
+int SHOTS_PlayerShoot(
+    int type // INPUT : OBJECT TYPE
 )
 {
     SHOT_LIB *lib;
@@ -596,26 +589,26 @@ SHOTS_PlayerShoot(
     SPRITE_SHIP *enemy;
 
     lib = &shot_lib[type];
-    
+
     if (type == -1)
         EXIT_Error("SHOTS_PlayerShoot() type = EMPTY  ");
-    
+
     if (lib->cur_shoot)
         return 0;
-    
+
     lib->cur_shoot = lib->shoot_rate;
-    
+
     cur = SHOTS_Get();
-    
+
     if (!cur)
         return 0;
-    
+
     switch (type)
     {
     default:
         EXIT_Error("SHOTS_PlayerShoot() - Invalid Shot type");
         break;
-    
+
     case S_FORWARD_GUNS:
         if (!fx_gus)
             SND_Patch(FX_GUN, 127);
@@ -633,11 +626,11 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         ANIMS_StartAnim(A_PLAYER_SHOOT, o_gun1[playerpic], 0);
-        
+
         cur = SHOTS_Get();
         if (!cur)
             return 0;
-        
+
         cur->curframe = (wrand() % lib->numframes);
         cur->lib = &shot_lib[type];
         cur->delayflag = lib->delayflag;
@@ -652,7 +645,7 @@ SHOTS_PlayerShoot(
         cur->starty = player_cy;
         ANIMS_StartAnim(A_PLAYER_SHOOT, -o_gun1[playerpic] - 1, 0);
         break;
-    
+
     case S_PLASMA_GUNS:
         if (!fx_gus)
             SND_Patch(FX_GUN, 127);
@@ -669,7 +662,7 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         break;
-    
+
     case S_MICRO_MISSLE:
         if (!fx_gus)
             SND_Patch(FX_GUN, 127);
@@ -685,11 +678,11 @@ SHOTS_PlayerShoot(
         cur->move.y2 = 0;
         cur->startx = player_cx;
         cur->starty = player_cy;
-        
+
         cur = SHOTS_Get();
         if (!cur)
             return 0;
-        
+
         cur->lib = &shot_lib[type];
         cur->delayflag = lib->delayflag;
         cur->speed = lib->speed;
@@ -702,7 +695,7 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         break;
-    
+
     case S_DUMB_MISSLE:
         if (!fx_gus)
             SND_Patch(FX_MISSLE, 127);
@@ -718,11 +711,11 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         InitMobj(&cur->move);
-        
+
         cur = SHOTS_Get();
         if (!cur)
             return 0;
-        
+
         cur->lib = &shot_lib[type];
         cur->delayflag = lib->delayflag;
         cur->speed = lib->speed;
@@ -736,7 +729,7 @@ SHOTS_PlayerShoot(
         cur->starty = player_cy;
         InitMobj(&cur->move);
         break;
-    
+
     case S_MINI_GUN:
         enemy = ENEMY_GetRandom();
         if (!enemy)
@@ -760,7 +753,7 @@ SHOTS_PlayerShoot(
             InitMobj(&cur->move);
         }
         break;
-    
+
     case S_TURRET:
         enemy = ENEMY_GetRandomAir();
         if (!enemy)
@@ -788,7 +781,7 @@ SHOTS_PlayerShoot(
             ANIMS_StartAnim(A_LASER_BLAST, cur->move.x, cur->move.y);
         }
         break;
-    
+
     case S_MISSLE_PODS:
         SND_Patch(FX_GUN, 127);
         cur->lib = &shot_lib[type];
@@ -803,11 +796,11 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         ANIMS_StartAnim(A_PLAYER_SHOOT, o_gun2[playerpic], 1);
-        
+
         cur = SHOTS_Get();
         if (!cur)
             return 0;
-        
+
         cur->lib = &shot_lib[type];
         cur->delayflag = lib->delayflag;
         cur->speed = lib->speed;
@@ -821,7 +814,7 @@ SHOTS_PlayerShoot(
         cur->starty = player_cy;
         ANIMS_StartAnim(A_PLAYER_SHOOT, -o_gun2[playerpic] - 1, 1);
         break;
-    
+
     case S_AIR_MISSLE:
         SND_Patch(FX_MISSLE, 127);
         cur->lib = &shot_lib[type];
@@ -835,11 +828,11 @@ SHOTS_PlayerShoot(
         cur->move.y2 = 0;
         cur->startx = player_cx;
         cur->starty = player_cy;
-        
+
         cur = SHOTS_Get();
         if (!cur)
             return 0;
-        
+
         cur->lib = &shot_lib[type];
         cur->delayflag = lib->delayflag;
         cur->speed = lib->speed;
@@ -852,7 +845,7 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         break;
-    
+
     case S_GRD_MISSLE:
         SND_Patch(FX_MISSLE, 127);
         cur->lib = &shot_lib[type];
@@ -866,11 +859,11 @@ SHOTS_PlayerShoot(
         cur->move.y2 = 0;
         cur->startx = player_cx;
         cur->starty = player_cy;
-        
+
         cur = SHOTS_Get();
         if (!cur)
             return 0;
-        
+
         cur->lib = &shot_lib[type];
         cur->delayflag = lib->delayflag;
         cur->speed = lib->speed;
@@ -883,7 +876,7 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         break;
-    
+
     case S_BOMB:
         SND_Patch(FX_MISSLE, 127);
         cur->lib = &shot_lib[type];
@@ -898,7 +891,7 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         break;
-    
+
     case S_ENERGY_GRAB:
         SND_Patch(FX_GUN, 127);
         cur->lib = &shot_lib[type];
@@ -913,7 +906,7 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         break;
-    
+
     case S_MEGA_BOMB:
         SND_Patch(FX_GUN, 127);
         cur->lib = &shot_lib[type];
@@ -929,7 +922,7 @@ SHOTS_PlayerShoot(
         cur->starty = player_cy;
         InitMobj(&cur->move);
         break;
-    
+
     case S_PULSE_CANNON:
         SND_Patch(FX_PULSE, 127);
         cur->lib = &shot_lib[type];
@@ -944,7 +937,7 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         break;
-    
+
     case S_FORWARD_LASER:
         SND_Patch(FX_LASER, 127);
         cur->lib = &shot_lib[type];
@@ -958,11 +951,11 @@ SHOTS_PlayerShoot(
         cur->move.y2 = -24;
         cur->startx = player_cx;
         cur->starty = player_cy;
-        
+
         cur = SHOTS_Get();
         if (!cur)
             return 0;
-        
+
         cur->lib = &shot_lib[type];
         cur->delayflag = lib->delayflag;
         cur->speed = lib->speed;
@@ -975,7 +968,7 @@ SHOTS_PlayerShoot(
         cur->startx = player_cx;
         cur->starty = player_cy;
         break;
-    
+
     case S_DEATH_RAY:
         SND_Patch(FX_LASER, 127);
         cur->lib = &shot_lib[type];
@@ -991,17 +984,15 @@ SHOTS_PlayerShoot(
         cur->move.y2 = -24;
         break;
     }
-    
+
     return 1;
 }
 
 /***************************************************************************
 SHOTS_Think () - Does All Thinking for shot system
  ***************************************************************************/
-void 
-SHOTS_Think(
-    void
-)
+void SHOTS_Think(
+    void)
 {
     SHOT_LIB *lib;
     SHOTS *shot;
@@ -1018,13 +1009,13 @@ SHOTS_Think(
     for (shot = first_shots.next; &last_shots != shot; shot = shot->next)
     {
         lib = shot->lib;
-        
+
         switch (lib->beam)
         {
         default:
             EXIT_Error("SHOTS_Think()");
             break;
-        
+
         case S_SHOOT:
             shot->pic = lib->pic[shot->curframe];
             shot->x = shot->move.x - lib->hlx;
@@ -1035,23 +1026,23 @@ SHOTS_Think(
             if (lib->smoke)
                 ANIMS_StartAnim(A_SMALL_SMOKE_DOWN, shot->x + lib->hlx, shot->y + lib->hly * 2);
             break;
-        
+
         case S_LINE:
             shot->x = shot->move.x;
             shot->y = shot->move.y;
             break;
-        
+
         case S_BEAM:
             shot->pic = lib->pic[shot->curframe];
             shot->x = shot->move.x - lib->hlx;
             shot->y = shot->move.y;
-            
+
             for (enemy = first_enemy.next; &last_enemy != enemy; enemy = enemy->next)
             {
                 if (shot->x > enemy->x && shot->x < enemy->x2 && enemy->y < player_cy && enemy->y > -30)
                 {
                     enemy->hits -= lib->hits;
-                    
+
                     if (enemy->hits != -1)
                     {
                         shot->move.y2 = enemy->y + enemy->hly;
@@ -1061,13 +1052,13 @@ SHOTS_Think(
             }
             break;
         }
-        
+
         if (lib->fplrx)
             shot->x += player_cx - shot->startx;
-        
+
         if (lib->fplry)
             shot->y += player_cy - shot->starty;
-        
+
         if ((shot->y + 16 < 0) || (shot->x < 0) || (shot->x > 320) || (shot->y > 200))
         {
             if (lib->move_flag)
@@ -1076,14 +1067,14 @@ SHOTS_Think(
                 goto shot_done;
             }
         }
-        
+
         if (shot->delayflag == 0)
         {
             if (shot->speed < lib->maxspeed)
                 shot->speed++;
-            
+
             shot->curframe++;
-            
+
             if (shot->curframe >= lib->numframes)
             {
                 if (lib->move_flag)
@@ -1095,16 +1086,16 @@ SHOTS_Think(
                 }
             }
         }
-        
+
         if (shot->doneflag)
         {
             shot->move.done = 1;
             goto shot_done;
         }
-        
+
         if (lib->meffect)
             goto shot_done;
-        
+
         switch (lib->ht)
         {
         default:
@@ -1112,29 +1103,29 @@ SHOTS_Think(
             if (enemy)
             {
                 shot->doneflag = 1;
-                
+
                 ANIMS_StartAnim(A_BLUE_SPARK, shot->x, shot->y);
                 ANIMS_StartEAnim(enemy, A_ENERGY_GRAB, enemy->hlx, enemy->hly);
             }
             break;
-        
+
         case S_GRALL:
             if (ENEMY_DamageAll(shot->x, shot->y, lib->hits))
             {
                 shot->doneflag = 1;
-                
+
                 if ((wrand() % 2) != 0)
                     ANIMS_StartAnim(A_BLUE_SPARK, shot->x, shot->y);
                 else
                     ANIMS_StartAnim(A_ORANGE_SPARK, shot->x, shot->y);
             }
             break;
-        
+
         case S_ALL:
             if (ENEMY_DamageAll(shot->x, shot->y, lib->hits))
             {
                 shot->doneflag = 1;
-                
+
                 if ((wrand() % 2) != 0)
                     ANIMS_StartAnim(A_BLUE_SPARK, shot->x, shot->y);
                 else
@@ -1148,24 +1139,24 @@ SHOTS_Think(
                 }
             }
             break;
-        
+
         case S_AIR:
             if (ENEMY_DamageAir(shot->x, shot->y, lib->hits))
             {
                 shot->doneflag = 1;
-                
+
                 if ((wrand() % 2) != 0)
                     ANIMS_StartAnim(A_BLUE_SPARK, shot->x, shot->y);
                 else
                     ANIMS_StartAnim(A_ORANGE_SPARK, shot->x, shot->y);
             }
             break;
-        
+
         case S_GROUND:
             if (ENEMY_DamageGround(shot->x, shot->y, lib->hits))
             {
                 shot->doneflag = 1;
-                
+
                 ANIMS_StartAnim(A_ORANGE_SPARK, shot->x, shot->y);
             }
             else
@@ -1176,7 +1167,7 @@ SHOTS_Think(
                 }
             }
             break;
-        
+
         case S_GTILE:
             if (TILE_Bomb(lib->hits, shot->x, shot->y))
             {
@@ -1185,14 +1176,14 @@ SHOTS_Think(
             if (ENEMY_DamageGround(shot->x, shot->y, 5))
             {
                 shot->doneflag = 1;
-                
+
                 ANIMS_StartAnim(A_SMALL_GROUND_EXPLO, shot->x, shot->y);
             }
             break;
         }
-    
+
     shot_done:
-        
+
         if (shot->move.done)
         {
             if (shot->delayflag)
@@ -1218,17 +1209,17 @@ SHOTS_Think(
                     ANIMS_StartAnim(A_SUPER_SHIELD, 0, 0);
                     shot = SHOTS_Remove(shot);
                     continue;
-                
+
                 case S_TURRET:
                     break;
-                
+
                 default:
                     shot = SHOTS_Remove(shot);
                     continue;
                 }
             }
         }
-        
+
         if (lib->move_flag)
         {
             if (lib->use_plot)
@@ -1251,15 +1242,13 @@ SHOTS_Think(
 /***************************************************************************
 SHOTS_Display () - Displays All active Shots
  ***************************************************************************/
-void 
-SHOTS_Display(
-    void
-)
+void SHOTS_Display(
+    void)
 {
     int loop, x, y;
     SHOTS *shot;
     GFX_PIC *h;
-    
+
     for (shot = first_shots.next; shot != &last_shots; shot = shot->next)
     {
         switch (shot->lib->beam)
@@ -1267,37 +1256,37 @@ SHOTS_Display(
         default:
             EXIT_Error("SHOTS_Display()");
             break;
-        
+
         case S_SHOOT:
             GFX_PutSprite(shot->pic, shot->x, shot->y);
             break;
-        
+
         case S_LINE:
             GFX_Line(player_cx + 1, player_cy, shot->move.x, shot->move.y, 69);
             GFX_Line(player_cx - 1, player_cy, shot->move.x, shot->move.y, 69);
             GFX_Line(player_cx, player_cy, shot->move.x, shot->move.y, 64);
             shot = SHOTS_Remove(shot);
             break;
-        
+
         case S_BEAM:
             for (loop = shot->move.y2; loop < shot->y; loop += 3)
             {
                 GFX_PutSprite(shot->pic, shot->x, loop);
             }
-            
+
             if (shot->lib->type == S_DEATH_RAY)
                 GFX_PutSprite(detpow[shot->cnt], shot->x - 4, shot->y);
             else
                 GFX_PutSprite(laspow[shot->cnt], shot->x, shot->y);
-            
-            h = (GFX_PIC*)lashit[shot->cnt];
-            
+
+            h = (GFX_PIC *)lashit[shot->cnt];
+
             x = shot->x - (h->width >> 2);
             y = shot->move.y2 - 8;
-            
+
             if (y > 0)
-                GFX_PutSprite((char*)h, x, y);
-            
+                GFX_PutSprite((char *)h, x, y);
+
             shot->cnt++;
             shot->cnt = shot->cnt % 4;
             break;
