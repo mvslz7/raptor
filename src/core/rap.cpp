@@ -1504,7 +1504,7 @@ int main_original(int argc, char *argv[])
     return 0;
 }
 
-int main_new()
+int RAP_Newmain()
 {
     fflush(stdout);
     printf("Raptor 2.0\n");
@@ -1618,7 +1618,7 @@ int main_new()
 
 int b2_flag, b3_flag, init_flag, rval, start_score, local_cnt;
 
-void initGame()
+void RAP_NewinitGame()
 {
     b2_flag = 0;
     b3_flag = 0;
@@ -1677,7 +1677,7 @@ void initGame()
     memset(buttons, 0, sizeof(buttons));
 }
 
-void shutdownGame()
+void RAP_NewshutdownGame()
 {
     GFX_FadeOut(0, 0, 0, 32);
 
@@ -1694,7 +1694,7 @@ void shutdownGame()
     IPT_End();
 }
 
-int step()
+int RAP_Newstep()
 {
     num_shadows = num_gshadows = 0;
 
@@ -1857,21 +1857,10 @@ int step()
     return 0;
 }
 
-typedef struct
-{
-    bool up;
-    bool down;
-    bool left;
-    bool right;
-    bool b1;
-    bool b2;
-    bool b3;
-} ACTION;
-
 const int MAX_ADDX = 10;
 const int MAX_ADDY = 8;
 
-void actions(ACTION *action)
+void RAP_Newactions(ACTION *action)
 {
     static int oldx = PLAYERINITX;
     int delta;
@@ -1988,7 +1977,7 @@ void actions(ACTION *action)
     player_cy = playery + (PLAYERHEIGHT / 2);
 }
 
-void observations()
+void RAP_Newobservations()
 {
     printf("  ==================================================\n");
     // print player info
@@ -2040,13 +2029,52 @@ void observations()
     }
 }
 
+RaptorController::RaptorController()
+{
+    RAP_Newmain();
+}
+
+RaptorController::~RaptorController()
+{
+}
+
+void RaptorController::createGame()
+{
+    // Initialize game state
+    RAP_NewinitGame();
+}
+
+void RaptorController::reset()
+{
+    // Reset game state
+    RAP_NewinitGame();
+}
+
+int RaptorController::stepGame()
+{
+    // Step through game logic
+    return RAP_Newstep();
+}
+
+void RaptorController::shutdownGame()
+{
+    // Shutdown game state
+    RAP_NewshutdownGame();
+}
+
+void RaptorController::actions(ACTION *action)
+{
+    // Handle actions
+    RAP_Newactions(action);
+}
+
 int main(
     int argc,
     char *argv[])
 {
-    main_new();
+    RaptorController *controller = new RaptorController();
 
-    initGame();
+    controller->createGame();
 
     int rval = 0;
     do
@@ -2054,12 +2082,15 @@ int main(
         ACTION action = {0};
         action.left = true;
         action.b1 = true;
-        actions(&action);
-        rval = step();
-        observations();
+        controller->actions(&action);
+
+        rval = controller->stepGame();
+
+        // observations();
+
     } while (rval == 0);
 
-    shutdownGame();
+    controller->shutdownGame();
 
     return 0;
 }
